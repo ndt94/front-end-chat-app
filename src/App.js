@@ -1,24 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { sendMsg, connect } from './api';
+import { Header } from './components/Header/Header';
+import ChatHistory from './components/ChatHistory/ChatHistory';
+
+let temp = [];
 
 function App() {
+  const [chatHistory, setChatHistory] = useState([]);
+  useEffect(() => {
+    connect((msg) => {
+      console.log('msg', msg.data);
+      temp.push(msg.data)
+      setChatHistory(temp);
+    });
+  }, [setChatHistory, chatHistory]);
+
+  const send = () => {
+    sendMsg('hello');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Header />
+      <ChatHistory chatHistory={chatHistory} />
+      <button onClick={send}>Hit</button>
     </div>
   );
 }
